@@ -1247,11 +1247,15 @@ FIX_STACK_ALIGN PyObject *obj_Triangle_new(PyTypeObject *type,PyObject *args,PyO
     auto idata = get_instance_data();
 
     try {
-        auto [p1,face_normal,normals,m] = get_arg::get_args("Triangle.__new__",args,kwds,
+        auto args_tuple = get_arg::get_args("Triangle.__new__",args,kwds,
             param<n_vector>(P(p1)),
             param<n_vector>(P(face_normal)),
             param(P(edge_normals)),
             param<material*>(P(material)));
+        auto &p1 = std::get<0>(args_tuple);
+        auto &face_normal = std::get<1>(args_tuple);
+        auto &normals = std::get<2>(args_tuple);
+        auto &m = std::get<3>(args_tuple);
 
         if(!compatible(p1,face_normal)) {
             PyErr_SetString(PyExc_TypeError,dim_err);
