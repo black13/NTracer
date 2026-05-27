@@ -28,7 +28,7 @@
     }
 
 #define PY_MEM_GC_NEW_DELETE static void *operator new(size_t s) {  \
-        void *ptr = _PyObject_GC_Malloc(s);                         \
+        void *ptr = PyObject_GC_Malloc(s);                          \
         if(!ptr) throw std::bad_alloc();                            \
         return ptr;                                                 \
     }                                                               \
