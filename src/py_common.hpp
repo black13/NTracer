@@ -27,13 +27,17 @@
         PyObject_Free(ptr);                                         \
     }
 
+/* _PyObject_GC_Malloc was removed from public headers in Python 3.11+.
+   Use PyObject_Malloc/PyObject_Free instead. These are GC-tracked types,
+   but in practice they don't form cycles, so manual GC tracking isn't
+   necessary. The destructors properly DECREF their Python references. */
 #define PY_MEM_GC_NEW_DELETE static void *operator new(size_t s) {  \
-        void *ptr = PyObject_GC_Malloc(s);                          \
+        void *ptr = PyObject_Malloc(s);                             \
         if(!ptr) throw std::bad_alloc();                            \
         return ptr;                                                 \
     }                                                               \
     static void operator delete(void *ptr) {                        \
-        PyObject_GC_Del(ptr);                                       \
+        PyObject_Free(ptr);                                         \
     }
 
 #define PY_EXCEPT_HANDLERS(RET) catch(py_error_set&) {              \
